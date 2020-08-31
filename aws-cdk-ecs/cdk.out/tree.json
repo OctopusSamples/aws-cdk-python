@@ -1,0 +1,550 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree"
+      },
+      "Default": {
+        "id": "Default",
+        "path": "Default",
+        "children": {
+          "ecs": {
+            "id": "ecs",
+            "path": "Default/ecs",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "Default/ecs/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ECS::Cluster",
+                  "aws:cdk:cloudformation:props": {
+                    "clusterName": "mjlCluster"
+                  }
+                }
+              },
+              "Vpc": {
+                "id": "Vpc",
+                "path": "Default/ecs/Vpc",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "Default/ecs/Vpc/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::VPC",
+                      "aws:cdk:cloudformation:props": {
+                        "cidrBlock": "10.0.0.0/16",
+                        "enableDnsHostnames": true,
+                        "enableDnsSupport": true,
+                        "instanceTenancy": "default",
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "Default/ecs/Vpc"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "PublicSubnet1": {
+                    "id": "PublicSubnet1",
+                    "path": "Default/ecs/Vpc/PublicSubnet1",
+                    "children": {
+                      "Subnet": {
+                        "id": "Subnet",
+                        "path": "Default/ecs/Vpc/PublicSubnet1/Subnet",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                          "aws:cdk:cloudformation:props": {
+                            "cidrBlock": "10.0.0.0/18",
+                            "vpcId": {
+                              "Ref": "ecsVpc11360268"
+                            },
+                            "availabilityZone": {
+                              "Fn::Select": [
+                                0,
+                                {
+                                  "Fn::GetAZs": ""
+                                }
+                              ]
+                            },
+                            "mapPublicIpOnLaunch": true,
+                            "tags": [
+                              {
+                                "key": "aws-cdk:subnet-name",
+                                "value": "Public"
+                              },
+                              {
+                                "key": "aws-cdk:subnet-type",
+                                "value": "Public"
+                              },
+                              {
+                                "key": "Name",
+                                "value": "Default/ecs/Vpc/PublicSubnet1"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "Acl": {
+                        "id": "Acl",
+                        "path": "Default/ecs/Vpc/PublicSubnet1/Acl"
+                      },
+                      "RouteTable": {
+                        "id": "RouteTable",
+                        "path": "Default/ecs/Vpc/PublicSubnet1/RouteTable",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                          "aws:cdk:cloudformation:props": {
+                            "vpcId": {
+                              "Ref": "ecsVpc11360268"
+                            },
+                            "tags": [
+                              {
+                                "key": "Name",
+                                "value": "Default/ecs/Vpc/PublicSubnet1"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "RouteTableAssociation": {
+                        "id": "RouteTableAssociation",
+                        "path": "Default/ecs/Vpc/PublicSubnet1/RouteTableAssociation",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                          "aws:cdk:cloudformation:props": {
+                            "routeTableId": {
+                              "Ref": "ecsVpcPublicSubnet1RouteTableD09BAD78"
+                            },
+                            "subnetId": {
+                              "Ref": "ecsVpcPublicSubnet1Subnet43617380"
+                            }
+                          }
+                        }
+                      },
+                      "DefaultRoute": {
+                        "id": "DefaultRoute",
+                        "path": "Default/ecs/Vpc/PublicSubnet1/DefaultRoute",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                          "aws:cdk:cloudformation:props": {
+                            "routeTableId": {
+                              "Ref": "ecsVpcPublicSubnet1RouteTableD09BAD78"
+                            },
+                            "destinationCidrBlock": "0.0.0.0/0",
+                            "gatewayId": {
+                              "Ref": "ecsVpcIGW42BCF1AD"
+                            }
+                          }
+                        }
+                      },
+                      "EIP": {
+                        "id": "EIP",
+                        "path": "Default/ecs/Vpc/PublicSubnet1/EIP",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::EIP",
+                          "aws:cdk:cloudformation:props": {
+                            "domain": "vpc",
+                            "tags": [
+                              {
+                                "key": "Name",
+                                "value": "Default/ecs/Vpc/PublicSubnet1"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "NATGateway": {
+                        "id": "NATGateway",
+                        "path": "Default/ecs/Vpc/PublicSubnet1/NATGateway",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::NatGateway",
+                          "aws:cdk:cloudformation:props": {
+                            "allocationId": {
+                              "Fn::GetAtt": [
+                                "ecsVpcPublicSubnet1EIP389D6D3B",
+                                "AllocationId"
+                              ]
+                            },
+                            "subnetId": {
+                              "Ref": "ecsVpcPublicSubnet1Subnet43617380"
+                            },
+                            "tags": [
+                              {
+                                "key": "Name",
+                                "value": "Default/ecs/Vpc/PublicSubnet1"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "PublicSubnet2": {
+                    "id": "PublicSubnet2",
+                    "path": "Default/ecs/Vpc/PublicSubnet2",
+                    "children": {
+                      "Subnet": {
+                        "id": "Subnet",
+                        "path": "Default/ecs/Vpc/PublicSubnet2/Subnet",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                          "aws:cdk:cloudformation:props": {
+                            "cidrBlock": "10.0.64.0/18",
+                            "vpcId": {
+                              "Ref": "ecsVpc11360268"
+                            },
+                            "availabilityZone": {
+                              "Fn::Select": [
+                                1,
+                                {
+                                  "Fn::GetAZs": ""
+                                }
+                              ]
+                            },
+                            "mapPublicIpOnLaunch": true,
+                            "tags": [
+                              {
+                                "key": "aws-cdk:subnet-name",
+                                "value": "Public"
+                              },
+                              {
+                                "key": "aws-cdk:subnet-type",
+                                "value": "Public"
+                              },
+                              {
+                                "key": "Name",
+                                "value": "Default/ecs/Vpc/PublicSubnet2"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "Acl": {
+                        "id": "Acl",
+                        "path": "Default/ecs/Vpc/PublicSubnet2/Acl"
+                      },
+                      "RouteTable": {
+                        "id": "RouteTable",
+                        "path": "Default/ecs/Vpc/PublicSubnet2/RouteTable",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                          "aws:cdk:cloudformation:props": {
+                            "vpcId": {
+                              "Ref": "ecsVpc11360268"
+                            },
+                            "tags": [
+                              {
+                                "key": "Name",
+                                "value": "Default/ecs/Vpc/PublicSubnet2"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "RouteTableAssociation": {
+                        "id": "RouteTableAssociation",
+                        "path": "Default/ecs/Vpc/PublicSubnet2/RouteTableAssociation",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                          "aws:cdk:cloudformation:props": {
+                            "routeTableId": {
+                              "Ref": "ecsVpcPublicSubnet2RouteTableE3948B6D"
+                            },
+                            "subnetId": {
+                              "Ref": "ecsVpcPublicSubnet2SubnetB2DE5EBD"
+                            }
+                          }
+                        }
+                      },
+                      "DefaultRoute": {
+                        "id": "DefaultRoute",
+                        "path": "Default/ecs/Vpc/PublicSubnet2/DefaultRoute",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                          "aws:cdk:cloudformation:props": {
+                            "routeTableId": {
+                              "Ref": "ecsVpcPublicSubnet2RouteTableE3948B6D"
+                            },
+                            "destinationCidrBlock": "0.0.0.0/0",
+                            "gatewayId": {
+                              "Ref": "ecsVpcIGW42BCF1AD"
+                            }
+                          }
+                        }
+                      },
+                      "EIP": {
+                        "id": "EIP",
+                        "path": "Default/ecs/Vpc/PublicSubnet2/EIP",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::EIP",
+                          "aws:cdk:cloudformation:props": {
+                            "domain": "vpc",
+                            "tags": [
+                              {
+                                "key": "Name",
+                                "value": "Default/ecs/Vpc/PublicSubnet2"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "NATGateway": {
+                        "id": "NATGateway",
+                        "path": "Default/ecs/Vpc/PublicSubnet2/NATGateway",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::NatGateway",
+                          "aws:cdk:cloudformation:props": {
+                            "allocationId": {
+                              "Fn::GetAtt": [
+                                "ecsVpcPublicSubnet2EIPD7302BF3",
+                                "AllocationId"
+                              ]
+                            },
+                            "subnetId": {
+                              "Ref": "ecsVpcPublicSubnet2SubnetB2DE5EBD"
+                            },
+                            "tags": [
+                              {
+                                "key": "Name",
+                                "value": "Default/ecs/Vpc/PublicSubnet2"
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "PrivateSubnet1": {
+                    "id": "PrivateSubnet1",
+                    "path": "Default/ecs/Vpc/PrivateSubnet1",
+                    "children": {
+                      "Subnet": {
+                        "id": "Subnet",
+                        "path": "Default/ecs/Vpc/PrivateSubnet1/Subnet",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                          "aws:cdk:cloudformation:props": {
+                            "cidrBlock": "10.0.128.0/18",
+                            "vpcId": {
+                              "Ref": "ecsVpc11360268"
+                            },
+                            "availabilityZone": {
+                              "Fn::Select": [
+                                0,
+                                {
+                                  "Fn::GetAZs": ""
+                                }
+                              ]
+                            },
+                            "mapPublicIpOnLaunch": false,
+                            "tags": [
+                              {
+                                "key": "aws-cdk:subnet-name",
+                                "value": "Private"
+                              },
+                              {
+                                "key": "aws-cdk:subnet-type",
+                                "value": "Private"
+                              },
+                              {
+                                "key": "Name",
+                                "value": "Default/ecs/Vpc/PrivateSubnet1"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "Acl": {
+                        "id": "Acl",
+                        "path": "Default/ecs/Vpc/PrivateSubnet1/Acl"
+                      },
+                      "RouteTable": {
+                        "id": "RouteTable",
+                        "path": "Default/ecs/Vpc/PrivateSubnet1/RouteTable",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                          "aws:cdk:cloudformation:props": {
+                            "vpcId": {
+                              "Ref": "ecsVpc11360268"
+                            },
+                            "tags": [
+                              {
+                                "key": "Name",
+                                "value": "Default/ecs/Vpc/PrivateSubnet1"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "RouteTableAssociation": {
+                        "id": "RouteTableAssociation",
+                        "path": "Default/ecs/Vpc/PrivateSubnet1/RouteTableAssociation",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                          "aws:cdk:cloudformation:props": {
+                            "routeTableId": {
+                              "Ref": "ecsVpcPrivateSubnet1RouteTableD8F81E24"
+                            },
+                            "subnetId": {
+                              "Ref": "ecsVpcPrivateSubnet1SubnetAE78CE6D"
+                            }
+                          }
+                        }
+                      },
+                      "DefaultRoute": {
+                        "id": "DefaultRoute",
+                        "path": "Default/ecs/Vpc/PrivateSubnet1/DefaultRoute",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                          "aws:cdk:cloudformation:props": {
+                            "routeTableId": {
+                              "Ref": "ecsVpcPrivateSubnet1RouteTableD8F81E24"
+                            },
+                            "destinationCidrBlock": "0.0.0.0/0",
+                            "natGatewayId": {
+                              "Ref": "ecsVpcPublicSubnet1NATGatewayE8A315C0"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "PrivateSubnet2": {
+                    "id": "PrivateSubnet2",
+                    "path": "Default/ecs/Vpc/PrivateSubnet2",
+                    "children": {
+                      "Subnet": {
+                        "id": "Subnet",
+                        "path": "Default/ecs/Vpc/PrivateSubnet2/Subnet",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                          "aws:cdk:cloudformation:props": {
+                            "cidrBlock": "10.0.192.0/18",
+                            "vpcId": {
+                              "Ref": "ecsVpc11360268"
+                            },
+                            "availabilityZone": {
+                              "Fn::Select": [
+                                1,
+                                {
+                                  "Fn::GetAZs": ""
+                                }
+                              ]
+                            },
+                            "mapPublicIpOnLaunch": false,
+                            "tags": [
+                              {
+                                "key": "aws-cdk:subnet-name",
+                                "value": "Private"
+                              },
+                              {
+                                "key": "aws-cdk:subnet-type",
+                                "value": "Private"
+                              },
+                              {
+                                "key": "Name",
+                                "value": "Default/ecs/Vpc/PrivateSubnet2"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "Acl": {
+                        "id": "Acl",
+                        "path": "Default/ecs/Vpc/PrivateSubnet2/Acl"
+                      },
+                      "RouteTable": {
+                        "id": "RouteTable",
+                        "path": "Default/ecs/Vpc/PrivateSubnet2/RouteTable",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                          "aws:cdk:cloudformation:props": {
+                            "vpcId": {
+                              "Ref": "ecsVpc11360268"
+                            },
+                            "tags": [
+                              {
+                                "key": "Name",
+                                "value": "Default/ecs/Vpc/PrivateSubnet2"
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "RouteTableAssociation": {
+                        "id": "RouteTableAssociation",
+                        "path": "Default/ecs/Vpc/PrivateSubnet2/RouteTableAssociation",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                          "aws:cdk:cloudformation:props": {
+                            "routeTableId": {
+                              "Ref": "ecsVpcPrivateSubnet2RouteTable9C512A5E"
+                            },
+                            "subnetId": {
+                              "Ref": "ecsVpcPrivateSubnet2SubnetAA801CC3"
+                            }
+                          }
+                        }
+                      },
+                      "DefaultRoute": {
+                        "id": "DefaultRoute",
+                        "path": "Default/ecs/Vpc/PrivateSubnet2/DefaultRoute",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                          "aws:cdk:cloudformation:props": {
+                            "routeTableId": {
+                              "Ref": "ecsVpcPrivateSubnet2RouteTable9C512A5E"
+                            },
+                            "destinationCidrBlock": "0.0.0.0/0",
+                            "natGatewayId": {
+                              "Ref": "ecsVpcPublicSubnet2NATGateway0F403AF9"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "IGW": {
+                    "id": "IGW",
+                    "path": "Default/ecs/Vpc/IGW",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::InternetGateway",
+                      "aws:cdk:cloudformation:props": {
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "Default/ecs/Vpc"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "VPCGW": {
+                    "id": "VPCGW",
+                    "path": "Default/ecs/Vpc/VPCGW",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::VPCGatewayAttachment",
+                      "aws:cdk:cloudformation:props": {
+                        "vpcId": {
+                          "Ref": "ecsVpc11360268"
+                        },
+                        "internetGatewayId": {
+                          "Ref": "ecsVpcIGW42BCF1AD"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
